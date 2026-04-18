@@ -1,88 +1,55 @@
-<!-- Generated at 2026-04-18 15:10 AEDT -->
+# 📋 今日任务 — Day 1 / Week 1
 
-# 📋 Day 1（日历） / 计划 Day 3 内容 — 2026-04-18（周六）🚀 加速中
-
-- **日历日**：Day 1（formula: `今天 - 2026-04-18 + 1`）
-- **实际进度**：Day 1 + Day 2 已在 04-18 当天完成（提前 2 天，🎯 M0 达成）
-- **今日推进**：按计划表 **Day 3 内容**（原定 04-20 周一）
-- **Week**：1 / 8
-- **距 2026-06-07 投递日**：**50 天**
-- **本周主题**：Isaac Lab 环境打通 → Franka RL
+> **时间戳**：2026-04-18（周六）生成
+> **进度**：Day 1 / 56 · Week 1 / 8
+> **距离 06-07 投递日**：还有 50 天
+> **状态**：🚀 超进度（M0 已于今日达成，Day 2 计划项也已完成）
 
 ---
 
-## 🎯 核心任务（必做，3–4h）
+## 🎯 核心任务（今日，2-3h，可选弹性）
 
-### 上午（1–2h）：B 站 + 中文文档扫读
-- [ ] B 站「IsaacLab 中文教程 1.1 代码框架」40min
-  - https://www.bilibili.com/video/BV1pLYAz1EH3/
-- [ ] 官方中文快速入门 20min
-  - https://docs.robotsfan.com/isaaclab/source/setup/quickstart.html
+由于 Day 1+2 计划项今天都做完了，今天主线已完成，进入"巩固 + 低强度前瞻"模式：
 
-### 下午（2h）：跑通 4 个官方 tutorial
-```bash
-conda activate isaaclab
-cd ~/embodied-ai/isaaclab/IsaacLab
-./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py
-./isaaclab.sh -p scripts/tutorials/00_sim/spawn_prims.py
-./isaaclab.sh -p scripts/tutorials/01_assets/run_articulation.py
-./isaaclab.sh -p scripts/tutorials/02_scene/create_scene.py
-```
+- [ ] **整理 Day 1/2 踩坑笔记**：确认 `notes/daily/2026-04-18.md` 完整（CUDA 999、IsaacLab v2.x checkout、shader 编译 15min、GNOME 误报）
+- [ ] **环境冒烟测试**（15 分钟）：重开终端验证 `conda activate isaaclab && ./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py` 一次通过，防止明天 Day 3 被环境坑
+- [ ] **资源归档**：Day 3 要看的 B 站「IsaacLab 1.1 代码框架」链接 + 官方中文快速入门链接，收进 `future_reading.md`（不看，仅归档）
 
-### 📝 概念内化（`notes/week1/day3.md`，不查答案写 4 问）
-1. `sim` / `stage` / `scene` 各自是什么？
-2. `Articulation` 和普通 rigid body 的区别？
-3. `sim.step()` 循环 vs RL 的 episode 是什么关系？
-4. USD vs URDF 什么关系？
+## ⭐ 加速版彩蛋（可选，1h）
 
----
+- [ ] **提前看 Day 3 的 4 个概念题**（sim/stage/scene、Articulation、sim.step vs episode、USD vs URDF），**先写下你的猜测答案**，明天看完教程再对照修正 — 主动回忆 > 被动看视频
 
-## ⭐ 加速版彩蛋（提前完成后再做）
-- [ ] 预读 Day 4 Franka Reach 训练命令 + rsl_rl 参数表
-- [ ] 在 `notes/week1.md` 起草「Manager-based 数据流图」TODO 骨架
-- [ ] `demos/` 目录预建 + README 占位
+## 🦿 Locomotion 穿插（周末 slot，Week 1 允许，1-2h）
 
----
-
-## 🦿 Locomotion 穿插
-本周仅周末（Day 7, 04-24）做 L1-L2。**今日跳过**，把精力压在主线 tutorial。
+- [ ] **L1**：扫读知乎《RL 做足式机器人运控的经典必读文章》→ 只记 3-4 个论文名字，不求读懂
+- [ ] **L2**：在 `notes/locomotion.md` 写 10 个术语一句话解释（proprioception / privileged info / teacher-student / DR / sim2real gap / PD / reward shaping / curriculum / ZMP-LIP-MPC / WBC）
 
 ---
 
 ## 📦 今日产出
 
-| 文件 | 内容 |
-|---|---|
-| `notes/week1/day3.md` | 4 个概念问答 |
-| `notes/daily/2026-04-18.md` | 补 Day 3 踩坑记录 |
-| `notes/progress.md` | Day 3 checkbox 勾上 |
-| commit @ 分支 `claude/daily-2026-04-18` | `docs: Day 3 tutorial walkthrough + 4 concepts` |
+- `notes/daily/2026-04-18.md`（已存在，确认完整）
+- `notes/locomotion.md`（+10 术语 + 3-4 论文名）
+- `notes/future_reading.md`（+Day 3 B 站链接归档）
+- Commit：`chore(day1): consolidate Day 1-2 notes + locomotion L1-L2`
 
----
-
-## 💻 命令速查
+## ⚡ 命令速查
 
 ```bash
-# 环境激活
+# 明早 Day 3 开工前的冒烟测试（今天先跑一次）
 conda activate isaaclab
-
-# Omniverse 导航：按住【鼠标右键 + WASD】= FPS 漫游
-# GUI "无响应" 90% 是 GNOME 误报 → 点"等待"
-# shader 首次编译 10–20 分钟，耐心等
+cd ~/embodied-ai/isaaclab/IsaacLab
+./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py
 ```
-
----
 
 ## ⚠️ 风险提醒
 
-- tutorial 之间 stage 状态可能互相污染 → 每次独立启动一次
-- `run_articulation.py` 首次要下载 Franka USD，留意网络
-- 若 `CUDA error 999` → `sudo reboot`（Day 2 踩过）
-- 不要误切回 IsaacLab `main`（v3.0-beta，已 checkout v2.x）
-- **节奏 > 速度**：已提前 2 天，不代表可以通宵刷到 Day 5；今天把 4 个概念钉死胜过多跑 2 个 tutorial
+- **别冲 Day 3**：今天已连跑两天量，晚上堆 tutorial 容易第二天卡 bug 没耐心 → 留着精力明天一次吃透
+- **明天 Day 3 触发 3 日反思暂停**：提前备好"过去 3 天最大阻塞是什么"的答案
+- **Week 4/7/8 零加速**：把冲刺欲望留到 Week 4 π₀ 真机那一周
 
 ---
 
-## 💪 今日一句
+## 💪 一句话激励
 
-> 已提前 2 天达成 M0。50 天后投递，今天把 4 个概念钉死，Day 4 的 Franka RL 会像滑梯。🚀
+**第一天就达成 M0，节奏已经对了 — 剩下的 50 天不是赶路，是把路走稳。**
