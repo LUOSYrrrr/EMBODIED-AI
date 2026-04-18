@@ -1,0 +1,94 @@
+# ============================
+# 第三方源码(本仓库不追踪,自己 clone)
+# ============================
+isaaclab/IsaacLab
+isaaclab/IsaacLab/
+lerobot/lerobot
+lerobot/lerobot/
+evo-rl/
+
+# ROS 2 构建产物
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# ============================
+# 大文件:视频 / 权重 / 数据集 / 日志
+# ============================
+# demos 整目录忽略,视频太大,简历演示用云盘或 LFS
+demos/*.mp4
+demos/*.mov
+demos/*.mkv
+demos/*.webm
+
+# 模型权重
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# 数据集
+*.hdf5
+*.h5
+*.zarr
+*.parquet
+
+# 训练日志 / TensorBoard
+logs/
+runs/
+tb_logs/
+wandb/
+outputs/
+
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+.conda/
+
+# ============================
+# Jupyter
+# ============================
+.ipynb_checkpoints/
+
+# ============================
+# 编辑器 / IDE
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================
+# OS
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# 个人 / 临时
+# ============================
+.env
+.env.local
+*.log
+tmp/
+scratch/
