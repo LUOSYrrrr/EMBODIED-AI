@@ -49,7 +49,7 @@
 | Python | 3.10（conda 环境 `isaaclab`） | ✅ |
 | PyTorch | 2.5.1 + cu124 | ✅ |
 | Isaac Sim | 4.5.0（pip 方式安装） | ✅ |
-| Isaac Lab | 2.x（从 GitHub 克隆） | ✅ |
+| Isaac Lab | v2.3.2（2.x 线最新稳定 tag，避开 main 的 v3.0.0-beta / Newton） | ✅ |
 | 机器人 | SO-101（已组装，未跑过代码） | ⏳ Week 3 启用 |
 | 远程算力 | Spartan HPC（A100，punim2341） | ✅ Week 4+ 备用 |
 
@@ -720,7 +720,7 @@ pip install -e .
 
 ### 项目 1：Isaac Lab VLA 仿真训练平台
 
-**技术栈**：Python / PyTorch 2.5.1 / Isaac Sim 4.5 / Isaac Lab 2.x / rsl_rl / PPO
+**技术栈**：Python / PyTorch 2.5.1 / Isaac Sim 4.5 / Isaac Lab v2.3.2 / rsl_rl / PPO
 
 **亮点**：
 - [x] 在 Ubuntu 22.04 + RTX 4070 Ti Super 完整部署 Isaac Sim + Isaac Lab 环境
