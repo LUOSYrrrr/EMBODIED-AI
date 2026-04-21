@@ -3,8 +3,7 @@
 # ============================
 isaaclab/IsaacLab
 isaaclab/IsaacLab/
-lerobot/lerobot
-lerobot/lerobot/
+lerobot/
 evo-rl/
 
 # ROS 2 构建产物
@@ -85,10 +84,23 @@ env/
 Thumbs.db
 
 # ============================
-# 个人 / 临时
+# 个人 / 临时 / 凭证
 # ============================
 .env
 .env.local
 *.log
 tmp/
 scratch/
+
+# 凭证 / token / 个人密钥（兜底,防止误提交）
+*.token
+*_token
+*_token.*
+secrets/
+credentials.json
+credentials*.json
+.huggingface/
+.hf_token
+wandb_api_key*
+*.pem
+*.key

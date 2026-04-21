@@ -1,16 +1,48 @@
-# 🤖 Embodied AI Internship Prep — Master Plan v2.1
+# 🤖 Embodied AI Internship Prep — Master Plan v3.0
 
 > **目标**：2026 年 6 月具身智能算法实习入职
 > **开始日期**：2026-04-18（周六）
 > **投递截止**：2026-06-07（Week 7 周日）
-> **主攻方向**：VLA / Manipulation（π₀ + Isaac Lab + SO-101 + LeRobot）
-> **辅攻方向**：ROS 2 基础 + Locomotion 速通 + Evo-RL 加分
+> **主攻方向（v3.0 收敛）**：**SO-101 真机复现 π₀ / π₀.₅**（LeRobot pipeline）
+> **暂缓辅线**：Isaac Lab 仿真、ROS 2 独立栈、Locomotion、Evo-RL（主线有余力再启动）
 >
-> **最后更新**：2026-04-19（Day 2 结束）
+> **最后更新**：2026-04-22（Day 5 结束 — 方向 pivot）
 >
 > **变更日志**：
+> - **v3.0（2026-04-22）：方向收敛** — 近期聚焦 SO-101 真机 π₀/π₀.₅ 复现，Isaac Lab 仿真 / Locomotion / Evo-RL / ROS 2 独立栈全部后挪；Week 1 SO-101 ACT pipeline 已跑通（见 [2026-04-22.md](daily/2026-04-22.md)）
 > - v2.1（2026-04-19）：同步 Day 2 实际进展、加入 Evo-RL 加分项、精确 Locomotion 视频章节
 > - v2.0（2026-04-18）：首版，加入 Locomotion 辅线
+
+---
+
+## 🎯 当前聚焦（2026-04-22 起，v3.0 pivot）
+
+**近期唯一目标**：SO-101 上复现 π₀ 论文成果（VLM + Action Expert + Flow Matching）
+
+**理由**：
+- 投递截止前能拿出"**真机 π₀ demo 视频**"比"仿真 + 真机 + Locomotion 三条半成品"更有说服力
+- 意向公司（银河通用 / 智元 / 上海 AI Lab）直接对口 π₀ 技术栈
+- 本地 4070 Ti Super 能跑 ACT，π₀ 微调需要 Spartan 但可接受
+- Week 1 Day 5 已经把 SO-101 数据采集 + ACT 训练打通，没必要回头补仿真
+
+**下一步流水线**：
+1. ⏳ 等 ACT 训完（04-22 早上）→ 真机推理测成功率
+2. ⏳ π₀ 预训练权重加载(huggingface `lerobot/pi0`)
+3. ⏳ 用同一份 SO-101 数据集微调 π₀ → 真机 demo
+4. ⏳ π₀.₅ 对比实验（`pi05` config，训练时长 9h vs π₀ 5-7h）
+5. ⏳ 录 demo 合集视频 → 简历
+
+**后挪内容（按需启动,不是放弃）**：
+
+| 原计划 | 原 Week | 后挪理由 |
+|---|---|---|
+| Isaac Lab Franka Reach RL | W1 D4 | 跟真机 π₀ 无关，面试能用笔记聊 |
+| SO-101 URDF → Isaac Lab 导入 | W2 | 真机已经能用，仿真是锦上添花 |
+| ROS 2 + SO-101 真机节点 | W3 | LeRobot 自带 socket 通信够用 |
+| G1 Locomotion 复现 | W5 | 辅线，主线告急就砍 |
+| Evo-RL Offline RL 对比 | W6 | 差异化但门槛高，主线全完成再说 |
+
+**决策规则**：任何时候问自己"这一步是否直接服务于'π₀ 真机 demo 视频'"，否就先不做。
 
 ---
 
@@ -130,18 +162,29 @@ cd IsaacLab
 
 ## 核心里程碑
 
+**v3.0 主线里程碑**（SO-101 + π₀ 真机复现）：
+
 | 里程碑 | 截止日期 | 验收标准 | 状态 |
 |---|---|---|---|
-| 🎯 **M0**：环境打通 | Week 1 Day 2 | 跑通 Isaac Lab `create_empty.py` | ✅ **2026-04-19 达成** |
-| 🎯 M1：Isaac Lab 跑通 Franka RL | Week 1 Day 7 | Franka Reach 训练视频 + TensorBoard 曲线 | ⏳ |
-| 🎯 M2：SO-101 在 Isaac Lab 仿真里动起来 | Week 2 Day 14 | SO-101 仿真关节运动 demo | ⏳ |
-| 🎯 M3：ROS 2 控制 SO-101 真机闭环 | Week 3 Day 20 | ROS 2 节点读关节 + 发目标角 + 真机响应 | ⏳ |
-| 🎯 M4：π₀ / ACT 在 SO-101 真机 demo | Week 4 Day 28 | 真机抓取任务视频（**必杀技！**） | ⏳ |
-| 🎯 M5：Isaac Lab SO-101 仿真训练 | Week 5 Day 33 | 仿真训练的 policy 完成任务 | ⏳ |
-| 🎯 M6：Sim-to-Real 闭环 demo | Week 6 Day 38 | 仿真 → 真机 pipeline 视频 | ⏳ |
-| 🎯 M6.5：Evo-RL 对比实验（可选加分） | Week 6 Day 40 | π₀ vs Evo-RL 对比表 | ⏳ |
-| 🎯 M7：投递 20+ 家 | Week 7 Day 47 | 简历 + GitHub + 投递记录 | ⏳ |
-| 🎯 M8：拿到至少 1 个面试 | Week 8 | 面试笔记 | ⏳ |
+| 🎯 **M0**：Isaac Sim/Lab 环境打通 | Week 1 Day 2 | 跑通 Isaac Lab `create_empty.py` | ✅ 2026-04-19 |
+| 🎯 **M1**：SO-101 真机 pipeline 打通 | Week 1 Day 5 | 双相机联调 + 50 条数据 + ACT 训练启动 | ✅ **2026-04-22** |
+| 🎯 **M2**：ACT 真机推理验证 | Week 2 Day 6-7 | ACT checkpoint 真机跑 pick-and-place，成功率 ≥50% | ⏳ |
+| 🎯 **M3**：π₀ 微调 + 真机 demo | Week 3 | 用 SO-101 数据微调 π₀，真机抓取视频 | ⏳ |
+| 🎯 **M4**：π₀.₅ 对比 + demo 合集 | Week 4 | π₀ vs π₀.₅ vs ACT 对比表 + 剪辑 2 分钟 demo 视频 | ⏳ |
+| 🎯 **M5**：简历 + GitHub 打磨 | Week 5-6 | 简历定稿 + 项目 README + demo 嵌入 | ⏳ |
+| 🎯 **M6**：投递 20+ 家 | Week 7 Day 47 | 投递记录表 | ⏳ |
+| 🎯 **M7**：拿到至少 1 个面试 | Week 8 | 面试笔记 | ⏳ |
+
+**暂缓里程碑**（主线完成后再启动）：
+
+| 暂缓项 | 原计划 | 重新启动条件 |
+|---|---|---|
+| ~~Isaac Lab Franka RL~~ | 原 M1 | M4 完成且有 ≥1 周余量 |
+| ~~SO-101 仿真~~ | 原 M2, M5 | 面试需要聊仿真时补 |
+| ~~ROS 2 独立栈~~ | 原 M3 | LeRobot socket 不够用才启动 |
+| ~~Sim-to-Real 闭环~~ | 原 M6 | 原 M4 真机 π₀ 已覆盖核心卖点 |
+| ~~Evo-RL 对比~~ | 原 M6.5 | Week 7 之前主线全达成 |
+| ~~G1 Locomotion~~ | 辅线 | 不做了,面试提到用笔记聊 |
 
 ---
 
