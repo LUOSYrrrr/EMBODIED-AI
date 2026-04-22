@@ -1,72 +1,85 @@
-# 📋 今日任务 — Day 3 / Week 1
+# 📋 今日任务 — Day 5 / Week 1
 
-> **时间戳**：2026-04-19（周日）
-> **进度**：Day 3 / 56 · Week 1 / 8（滚动推进：Day 1+2 已于 04-18 完成）
-> **距离 06-07 投递日**：还有 50 天
-> **时间预算**：3-4 小时
+> **时间戳**：2026-04-22（周三 AEST）
+> **进度**：Day 5 / 56 · Week 1 / 8
+> **距离 06-07 投递日**：还有 **46 天**
+> **v3.0 pivot 首日主线**：SO-101 真机 π₀/π₀.₅ 复现
+> **时间预算**：4-5 小时
 
 ---
 
-## 🎯 上午（1-2h）：看 B 站中文教程
+## 🎯 核心任务（必做）
 
-- [ ] B 站「IsaacLab 中文教程 1.1 代码框架」（40 min）
-  - https://www.bilibili.com/video/BV1pLYAz1EH3/
-- [ ] 对照官方中文文档「快速入门」（20 min）
+昨夜 master_plan 已 pivot 到 v3.0。M1（ACT pipeline）✅ 达成，今日承接流水线第 2 步：**ACT 真机推理验证** + **π₀ 预训练权重预下载**。
 
-## 🛠️ 下午（2h）：动手 + 产出
+- [ ] **A. ACT 真机推理测试**（2-2.5h）
+  - 确认 ACT checkpoint 已收敛（看 loss 曲线 + TensorBoard）
+  - 真机接线：SO-101 双相机 + 舵机 `/dev/ttyUSB0` 冒烟测试
+  - `lerobot/scripts/control_robot.py record` 用 **policy eval 模式**跑 10 条 rollout
+  - 记录成功率（目标 ≥ 40%，M2 验收线是 Day 6-7 达 50%）
+  - **录视频**：`demos/act_so101_eval_day5.mp4`（10 秒内最佳 1 条）
 
-跑 4 个 tutorial：
+- [ ] **B. π₀ 权重 + 环境预备**（1-1.5h）
+  - `huggingface-cli login`（若未登录）
+  - `huggingface-cli download lerobot/pi0 --local-dir ~/embodied-ai/lerobot/weights/pi0`
+  - 检查 `lerobot` 源码 `configs/policy/pi0.yaml` 与 SO-101 observation/action 维度对齐
+  - 评估本地 4070 Ti Super 显存是否够微调 → 不够就准备 Spartan 提交脚本
+
+- [ ] **C. 失败案例归档**（0.5h）
+  - ACT 跑崩的 rollout 写进 `notes/daily/2026-04-22.md`（抓取抖动？夹爪时机？视角偏移？）
+  - 对照 π₀ flow matching 的优势假设 1-2 句话
+
+## ⭐ 加速版彩蛋（主线顺畅再做）
+
+- [ ] 在 `resume_assets.md` 更新项目 2：加上 "ACT baseline 50 trajectories / 真机首轮评估" 一行
+- [ ] 简述 π₀ 架构（VLM backbone + Action Expert + Flow Matching）3 句话写进 `notes/week1.md`，Week 8 面试直接复用
+
+## 🦿 Locomotion 穿插
+
+**今日跳过**（周三非周末 + v3.0 pivot 后辅线全部后挪）。
+
+---
+
+## 💻 命令速查
 
 ```bash
-cd ~/embodied-ai/isaaclab/IsaacLab
+conda activate lerobot
+cd ~/embodied-ai/lerobot
 
-# 1. 创建空场景
-./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py
+# ACT eval（伪代码，按你实际 script 名调整）
+python lerobot/scripts/eval.py \
+    --policy.path=outputs/train/act_so101/checkpoints/last \
+    --env.type=so101 \
+    --eval.n_episodes=10
 
-# 2. 生成刚体
-./isaaclab.sh -p scripts/tutorials/00_sim/spawn_prims.py
+# π₀ 权重下载
+huggingface-cli download lerobot/pi0 --local-dir ./weights/pi0
 
-# 3. 加载机器人资产
-./isaaclab.sh -p scripts/tutorials/01_assets/run_articulation.py
-
-# 4. 交互式场景
-./isaaclab.sh -p scripts/tutorials/02_scene/create_scene.py
+# 显存监控
+watch -n 1 nvidia-smi
 ```
-
-- [ ] `create_empty.py` — 空场景 GUI
-- [ ] `spawn_prims.py` — 生成刚体
-- [ ] `run_articulation.py` — 加载机器人资产
-- [ ] `create_scene.py` — 交互式场景
-
-## ✍️ 在 [week1.md](week1.md) 回答 4 个概念问题（不查答案，先凭印象写）
-
-- [ ] Q1：sim / stage / scene 各自是什么？
-- [ ] Q2：Articulation vs RigidObject 的区别？
-- [ ] Q3：`sim.step()` 循环和 RL episode 什么关系？
-- [ ] Q4：USD 是什么，和 URDF 什么关系？
-
-## 🔧 开工前（15 min）冒烟测试
-
-- [ ] 重开终端：`conda activate isaaclab && ./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py`
-
----
-
-## 📦 今日产出
-
-- [week1.md](week1.md) 填完 4 个概念问题 + 4 tutorial 产出
-- [daily/2026-04-19.md](daily/2026-04-19.md) 记当天踩坑
-- Commit：`feat(day3): IsaacLab 4 tutorials + 4 core concepts`
 
 ---
 
 ## ⚠️ 风险提醒
 
-- **别冲 Day 4**：今天吃透概念比跑通更多 tutorial 重要
-- **触发 3 日反思暂停**：今晚回答"过去 3 天最大阻塞是什么"
-- 非主线（Locomotion L1-L2 / future_reading 归档）塞不进就推迟，不占主线时间
+1. **USB 权限**：`sudo chmod 666 /dev/ttyUSB0`（每次重启都要）
+2. **相机冲突**：两个 USB 相机争带宽 → 分 USB 控制器或降分辨率 480p
+3. **π₀ 权重 ~10GB**：下载慢就挂 Spartan 拉取再 rsync 回本地
+4. **别急着微调 π₀**：今天只做"能加载 + 能前向 1 步"验证，微调是 Day 6-7 的事
+5. **Day 3 反思暂停已错过** → 合并到今晚收工写（"过去 3 天最大阻塞 + pivot 是否正确"）
+
+---
+
+## 📦 今日产出
+
+- `notes/daily/2026-04-22.md`：踩坑 + ACT 成功率 + π₀ 加载日志
+- `demos/act_so101_eval_day5.mp4`：首个真机评估视频
+- `~/embodied-ai/lerobot/weights/pi0/`：π₀ 权重本地就位
+- Commit：`notes(day5): ACT real-robot eval + pi0 weights ready`
 
 ---
 
 ## 💪 一句话激励
 
-**Day 2 提前一天完成 — 节奏稳住，Day 3 按部就班吃透 4 个概念就是胜利。**
+**pivot 后的第 1 天就是"让简历素材从零到一"的起跑枪 —— 拍下第一条 ACT 真机视频，你就有了跟银河通用 HR 开口的底气。**
