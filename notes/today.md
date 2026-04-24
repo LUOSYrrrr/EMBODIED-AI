@@ -1,42 +1,40 @@
-# 📋 今日任务 — Day 5 / Week 1
+# 📋 今日任务 — Day 8 / Week 2
 
-> **时间戳**：2026-04-22（周三 AEST）
-> **进度**：Day 5 / 56 · Week 1 / 8
-> **距离 06-07 投递日**：还有 **46 天**
-> **v3.0 pivot 首日主线**：SO-101 真机 π₀/π₀.₅ 复现
+> **时间戳**：2026-04-25（周六 AEST）
+> **进度**：Day 8 / 56 · Week 2 / 8（Week 2 开启）
+> **距离 06-07 投递日**：还有 **43 天**
+> **主线**：SO-101 真机 π₀/π₀.₅ 复现（v3.0 pivot）
 > **时间预算**：4-5 小时
 
 ---
 
 ## 🎯 核心任务（必做）
 
-昨夜 master_plan 已 pivot 到 v3.0。M1（ACT pipeline）✅ 达成，今日承接流水线第 2 步：**ACT 真机推理验证** + **π₀ 预训练权重预下载**。
+**A. ACT 真机推理验证 — M2 收官**（2-2.5h）
+- [ ] USB 权限 + 双相机冒烟测试
+- [ ] 跑 20 条 rollout，记录成功率（目标 ≥50%，Week 2 M2 验收线）
+- [ ] **录视频**：`demos/act_so101_grasp_v1.mp4`（10 秒最佳 1 条）
+- [ ] 失败模式归档到 `notes/daily/2026-04-25.md`（抓取抖动 / 夹爪时机 / 视角偏移）
 
-- [ ] **A. ACT 真机推理测试**（2-2.5h）
-  - 确认 ACT checkpoint 已收敛（看 loss 曲线 + TensorBoard）
-  - 真机接线：SO-101 双相机 + 舵机 `/dev/ttyUSB0` 冒烟测试
-  - `lerobot/scripts/control_robot.py record` 用 **policy eval 模式**跑 10 条 rollout
-  - 记录成功率（目标 ≥ 40%，M2 验收线是 Day 6-7 达 50%）
-  - **录视频**：`demos/act_so101_eval_day5.mp4`（10 秒内最佳 1 条）
+**B. Week 1 复盘 + π₀ 微调脚本准备**（1.5h）
+- [ ] 写 `notes/week1/review.md`：完成度 / 最大收获 / 最大坑 / Week 2 调整
+- [ ] 检查 `~/embodied-ai/lerobot/weights/pi0/` 已就位
+- [ ] 对齐 `configs/policy/pi0.yaml` 与 SO-101 observation/action 维度
+- [ ] 起草微调命令草案（本地试 1 step；若 OOM 切 Spartan）
 
-- [ ] **B. π₀ 权重 + 环境预备**（1-1.5h）
-  - `huggingface-cli login`（若未登录）
-  - `huggingface-cli download lerobot/pi0 --local-dir ~/embodied-ai/lerobot/weights/pi0`
-  - 检查 `lerobot` 源码 `configs/policy/pi0.yaml` 与 SO-101 observation/action 维度对齐
-  - 评估本地 4070 Ti Super 显存是否够微调 → 不够就准备 Spartan 提交脚本
-
-- [ ] **C. 失败案例归档**（0.5h）
-  - ACT 跑崩的 rollout 写进 `notes/daily/2026-04-22.md`（抓取抖动？夹爪时机？视角偏移？）
-  - 对照 π₀ flow matching 的优势假设 1-2 句话
+**C. Day 6 反思暂停**（30min）
+- [ ] 过去 3 天最大阻塞是什么？
+- [ ] v3.0 pivot 是否依然正确？
+- [ ] ≤200 字写到 `notes/daily/2026-04-25.md` 末尾
 
 ## ⭐ 加速版彩蛋（主线顺畅再做）
 
-- [ ] 在 `resume_assets.md` 更新项目 2：加上 "ACT baseline 50 trajectories / 真机首轮评估" 一行
-- [ ] 简述 π₀ 架构（VLM backbone + Action Expert + Flow Matching）3 句话写进 `notes/week1.md`，Week 8 面试直接复用
+- [ ] `resume_assets.md` 项目 2 加 "ACT 真机首轮 N% 成功率（20 条 rollout）"
+- [ ] π₀ 架构 3 句话面试卡（VLM backbone + Action Expert + Flow Matching）写进 `notes/week1.md`
 
 ## 🦿 Locomotion 穿插
 
-**今日跳过**（周三非周末 + v3.0 pivot 后辅线全部后挪）。
+**今日跳过**（v3.0 pivot 后辅线全部后挪；周六也优先 M2 收官）。
 
 ---
 
@@ -46,40 +44,47 @@
 conda activate lerobot
 cd ~/embodied-ai/lerobot
 
-# ACT eval（伪代码，按你实际 script 名调整）
+# USB 权限（重启必做）
+sudo chmod 666 /dev/ttyUSB0
+
+# ACT eval（按实际 script 名调整）
 python lerobot/scripts/eval.py \
     --policy.path=outputs/train/act_so101/checkpoints/last \
     --env.type=so101 \
-    --eval.n_episodes=10
+    --eval.n_episodes=20
 
-# π₀ 权重下载
-huggingface-cli download lerobot/pi0 --local-dir ./weights/pi0
+# π₀ 权重检查
+ls -lh weights/pi0/
 
-# 显存监控
-watch -n 1 nvidia-smi
+# π₀ 微调试跑 1 step（占位，参数按实际 config 写）
+python lerobot/scripts/train.py \
+    policy=pi0 \
+    env=so101 \
+    dataset_repo_id=你的用户名/so101_grasp \
+    training.steps=1
 ```
 
 ---
 
 ## ⚠️ 风险提醒
 
-1. **USB 权限**：`sudo chmod 666 /dev/ttyUSB0`（每次重启都要）
-2. **相机冲突**：两个 USB 相机争带宽 → 分 USB 控制器或降分辨率 480p
-3. **π₀ 权重 ~10GB**：下载慢就挂 Spartan 拉取再 rsync 回本地
-4. **别急着微调 π₀**：今天只做"能加载 + 能前向 1 步"验证，微调是 Day 6-7 的事
-5. **Day 3 反思暂停已错过** → 合并到今晚收工写（"过去 3 天最大阻塞 + pivot 是否正确"）
+1. **USB 权限**：每次重启 `sudo chmod 666 /dev/ttyUSB0`
+2. **相机带宽冲突**：两路 USB 相机争带宽 → 分 USB 控制器或降 480p
+3. **微调 OOM**：4070 Ti Super 16GB 大概率不够 π₀，提前打包 Spartan 提交脚本
+4. **别提前进 SO-101 仿真**：v3.0 已后挪，Week 2 唯一目标 = π₀ 真机 demo
+5. **Day 6 反思必须做**：上次反思 Day 5 已合并 Day 3，今日是新的 3 天节点
 
 ---
 
 ## 📦 今日产出
 
-- `notes/daily/2026-04-22.md`：踩坑 + ACT 成功率 + π₀ 加载日志
-- `demos/act_so101_eval_day5.mp4`：首个真机评估视频
-- `~/embodied-ai/lerobot/weights/pi0/`：π₀ 权重本地就位
-- Commit：`notes(day5): ACT real-robot eval + pi0 weights ready`
+- `notes/daily/2026-04-25.md`：M2 评估结果 + 失败案例 + Day 6 反思
+- `notes/week1/review.md`：Week 1 完整复盘
+- `demos/act_so101_grasp_v1.mp4`：M2 验收视频
+- Commit：`notes(day8): ACT M2 eval + week1 review`
 
 ---
 
 ## 💪 一句话激励
 
-**pivot 后的第 1 天就是"让简历素材从零到一"的起跑枪 —— 拍下第一条 ACT 真机视频，你就有了跟银河通用 HR 开口的底气。**
+**Week 2 第一天就是 M2 收官战 — 把 ACT 真机视频钉死，下周直奔 π₀ 微调。简历素材的第一颗钉子，今天敲进去。**
