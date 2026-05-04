@@ -1,42 +1,44 @@
-# 📋 今日任务 — Day 5 / Week 1
+# 📋 今日任务 — Day 18 / Week 3
 
-> **时间戳**：2026-04-22（周三 AEST）
-> **进度**：Day 5 / 56 · Week 1 / 8
-> **距离 06-07 投递日**：还有 **46 天**
-> **v3.0 pivot 首日主线**：SO-101 真机 π₀/π₀.₅ 复现
+> **时间戳**：2026-05-05（周二 AEST，墨尔本时区）
+> **进度**：Day 18 / 56 · Week 3 / 8
+> **距离 06-07 投递日**：还有 **33 天**
+> **v3.0 主线**：SO-101 真机 π₀ / π₀.₅ 复现
+> **本周里程碑**：🎯 **M3 — π₀ 微调 + 真机 demo**（Week 3 末验收）
 > **时间预算**：4-5 小时
+> **🪞 反思暂停日**（每 3 天触发一次）
 
 ---
 
 ## 🎯 核心任务（必做）
 
-昨夜 master_plan 已 pivot 到 v3.0。M1（ACT pipeline）✅ 达成，今日承接流水线第 2 步：**ACT 真机推理验证** + **π₀ 预训练权重预下载**。
+按 v3.0 流水线第 3-4 步推进。前提假设：M2（ACT 真机 ≥50%）已在 Week 2 末打卡；π₀ 权重已下载。如未达，先补 M2 再说。
 
-- [ ] **A. ACT 真机推理测试**（2-2.5h）
-  - 确认 ACT checkpoint 已收敛（看 loss 曲线 + TensorBoard）
-  - 真机接线：SO-101 双相机 + 舵机 `/dev/ttyUSB0` 冒烟测试
-  - `lerobot/scripts/control_robot.py record` 用 **policy eval 模式**跑 10 条 rollout
-  - 记录成功率（目标 ≥ 40%，M2 验收线是 Day 6-7 达 50%）
-  - **录视频**：`demos/act_so101_eval_day5.mp4`（10 秒内最佳 1 条）
+- [ ] **A. π₀ 微调跑起来**（2.5h，本日重头戏）
+  - 数据复用 Week 1 那批 SO-101 抓取数据集（≥50 条）
+  - 本地 4070 Ti Super 显存够则本地跑；不够立刻切 Spartan A100
+  - 参数起手：`policy=pi0`，`batch_size=8`，`steps=20000`，混合精度 bf16
+  - 监控 loss 曲线 + 显存占用，**前 2000 步必须 loss 下降**否则停训查 config
 
-- [ ] **B. π₀ 权重 + 环境预备**（1-1.5h）
-  - `huggingface-cli login`（若未登录）
-  - `huggingface-cli download lerobot/pi0 --local-dir ~/embodied-ai/lerobot/weights/pi0`
-  - 检查 `lerobot` 源码 `configs/policy/pi0.yaml` 与 SO-101 observation/action 维度对齐
-  - 评估本地 4070 Ti Super 显存是否够微调 → 不够就准备 Spartan 提交脚本
+- [ ] **B. 真机推理脚手架**（1h，并行做）
+  - `lerobot/scripts/eval.py` 写好 π₀ 推理路径：`policy.path=outputs/train/pi0_so101/checkpoints/last`
+  - SO-101 双相机 + 舵机冒烟测试（`sudo chmod 666 /dev/ttyUSB0`）
+  - **不要等微调结束才接线**，今天把推理链路先拉通
 
-- [ ] **C. 失败案例归档**（0.5h）
-  - ACT 跑崩的 rollout 写进 `notes/daily/2026-04-22.md`（抓取抖动？夹爪时机？视角偏移？）
-  - 对照 π₀ flow matching 的优势假设 1-2 句话
+- [ ] **C. 🪞 反思暂停（Day 18，0.5h）**
+  - 写进 `notes/daily/2026-05-05.md`，回答 3 题：
+    1. 过去 3 天主线推进了几步？是否仍在 v3.0 节奏上？
+    2. ACT 真机成功率到了多少？π₀ 是否真的能拉开差距（写假设）？
+    3. 距离投递只剩 33 天，**最该砍掉的一件事**是什么？
 
 ## ⭐ 加速版彩蛋（主线顺畅再做）
 
-- [ ] 在 `resume_assets.md` 更新项目 2：加上 "ACT baseline 50 trajectories / 真机首轮评估" 一行
-- [ ] 简述 π₀ 架构（VLM backbone + Action Expert + Flow Matching）3 句话写进 `notes/week1.md`，Week 8 面试直接复用
+- [ ] π₀.₅ config 预读：对比 `pi05` vs `pi0` 训练时长 / attention mask 差异，3 句话写进 `notes/week3.md`（Week 4 直接用）
+- [ ] 在 `resume_assets.md` 项目 2 加 "π₀ fine-tuning launched on SO-101 real-world dataset"
 
 ## 🦿 Locomotion 穿插
 
-**今日跳过**（周三非周末 + v3.0 pivot 后辅线全部后挪）。
+**今日跳过**（周二非周末 + v3.0 pivot 后辅线全部后挪，Week 3 仍主线优先）。
 
 ---
 
@@ -46,40 +48,50 @@
 conda activate lerobot
 cd ~/embodied-ai/lerobot
 
-# ACT eval（伪代码，按你实际 script 名调整）
+# π₀ 微调（本地）
+python lerobot/scripts/train.py \
+    policy=pi0 \
+    env=so101 \
+    dataset_repo_id=<你的用户名>/so101_grasp \
+    training.batch_size=8 \
+    training.offline_steps=20000 \
+    training.save_freq=2000
+
+# 显存不够 → Spartan A100
+sbatch ~/embodied-ai/scripts/spartan_pi0_train.sh
+
+# 真机推理（微调出第一个 checkpoint 后）
 python lerobot/scripts/eval.py \
-    --policy.path=outputs/train/act_so101/checkpoints/last \
+    --policy.path=outputs/train/pi0_so101/checkpoints/last \
     --env.type=so101 \
     --eval.n_episodes=10
 
-# π₀ 权重下载
-huggingface-cli download lerobot/pi0 --local-dir ./weights/pi0
-
-# 显存监控
+# 监控
 watch -n 1 nvidia-smi
+tensorboard --logdir outputs/train/pi0_so101
 ```
 
 ---
 
 ## ⚠️ 风险提醒
 
-1. **USB 权限**：`sudo chmod 666 /dev/ttyUSB0`（每次重启都要）
-2. **相机冲突**：两个 USB 相机争带宽 → 分 USB 控制器或降分辨率 480p
-3. **π₀ 权重 ~10GB**：下载慢就挂 Spartan 拉取再 rsync 回本地
-4. **别急着微调 π₀**：今天只做"能加载 + 能前向 1 步"验证，微调是 Day 6-7 的事
-5. **Day 3 反思暂停已错过** → 合并到今晚收工写（"过去 3 天最大阻塞 + pivot 是否正确"）
+1. **π₀ 显存**：4070 Ti Super 16GB 大概率不够 batch_size=8；OOM 立刻 → batch=2 + grad accumulation，或直接上 Spartan
+2. **数据集格式**：π₀ 期待的 obs/action key 与 ACT 不同，跑前 `dry-run 1 step` 验证
+3. **真机不要边训边跑**：训练时 GPU 占满，推理会抢资源 → 推理用 CPU 模式或晚上换班
+4. **33 天倒计时**：Week 4 才是 π₀ 冲刺周，本周如果 π₀ 跑不通就**砍掉 π₀.₅ 对比**直接锁 π₀
+5. **反思暂停别跳过**：Day 5 那次帮你做了 v3.0 pivot，今天可能又是一个决策窗
 
 ---
 
 ## 📦 今日产出
 
-- `notes/daily/2026-04-22.md`：踩坑 + ACT 成功率 + π₀ 加载日志
-- `demos/act_so101_eval_day5.mp4`：首个真机评估视频
-- `~/embodied-ai/lerobot/weights/pi0/`：π₀ 权重本地就位
-- Commit：`notes(day5): ACT real-robot eval + pi0 weights ready`
+- `notes/daily/2026-05-05.md`：π₀ 微调启动日志 + 反思 3 答 + 踩坑
+- `outputs/train/pi0_so101/checkpoints/`：至少 1 个早期 checkpoint
+- TensorBoard 截图：π₀ loss 前 2000 步曲线
+- Commit：`notes(day18): kick off pi0 fine-tuning + reflection pause`
 
 ---
 
 ## 💪 一句话激励
 
-**pivot 后的第 1 天就是"让简历素材从零到一"的起跑枪 —— 拍下第一条 ACT 真机视频，你就有了跟银河通用 HR 开口的底气。**
+**Week 3 的 π₀ 微调跑通就意味着 M3 提前一周达成，Week 4 全用来打磨 demo 视频 —— 这就是把"投递时手里有牌"的安全感攒出来。**
